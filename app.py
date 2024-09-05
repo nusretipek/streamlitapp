@@ -1,4 +1,6 @@
 import streamlit as st
+import pandas as pd
+import numpy as np
 import subprocess
 import tempfile
 import stat
@@ -59,35 +61,54 @@ verbose = st.sidebar.selectbox("Verbosity level",
                                index=0,
                                help="Set the verbosity level (0, 1, or 2).")
 
-# Execute program
-if st.sidebar.button("Run"):
-    executable_path = os.path.abspath("example")
-    os.chmod(executable_path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
-    if not os.path.isfile(file_path):
-        st.error(f"File {file_path} not found!")
-    else:
-        cmd = [executable_path,
-               "-f", file_path,
-               "--optimization-level", str(opt),
-               "--initial-k2", str(initial_k2),
-               "--n-random", str(n_random),
-               "--top-n", str(top_n),
-               "--verbose", str(verbose)]
+small_col, left_col, right_col = st.columns([1, 2, 3])
+with small_col:
+    if uploaded_file is not None or os.path.exists(file_path):
+        csv_data = pd.read_csv(file_path)
+        indices = sorted(set(list(csv_data.iloc[:, 0]) + list(csv_data.iloc[:, 1])))
+        pivot = pd.crosstab(index=csv_data.iloc[:, 0],
+                            columns=csv_data.iloc[:, 1],
+                            dropna=True).reindex(indices,
+                                                 fill_value=0,
+                                                 axis=0).reindex(indices,
+                                                                 fill_value=0,
+                                                                 axis=1)
+        st.subheader("Interactions")
+        st.dataframe(csv_data, height=530)
 
-        with st.spinner("Computing..."):
-            try:
-                result = subprocess.run(cmd, capture_output=True, text=True, check=True)
-                stdout = result.stdout
-                stderr = result.stderr
-                st.markdown("**Results**")
-                st.text_area(label="", label_visibility="collapsed", value=stdout + stderr, height=530)
-            except subprocess.CalledProcessError as e:
-                st.error(f"An error occurred: {e}")
-            except Exception as e:
-                st.error(f"An unexpected error occurred: {e}")
+with left_col:
+    st.subheader("Dominance Matrix")
+    st.dataframe(pivot, height=530)
 
-if st.sidebar.button("Reset"):
-    uploaded_file = None
-    st.rerun()
+with right_col:
+    st.subheader("Results")
+    if st.sidebar.button("Run"):
+        executable_path = os.path.abspath("example")
+        os.chmod(executable_path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
+        if not os.path.isfile(file_path):
+            st.error(f"File {file_path} not found!")
+        else:
+            cmd = [executable_path,
+                   "-f", file_path,
+                   "--optimization-level", str(opt),
+                   "--initial-k2", str(initial_k2),
+                   "--n-random", str(n_random),
+                   "--top-n", str(top_n),
+                   "--verbose", str(verbose)]
 
+            with st.spinner("Computing..."):
+                try:
+                    result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+                    stdout = result.stdout
+                    stderr = result.stderr
+                    st.text_area(label="", label_visibility="collapsed", value=stdout + stderr, height=530)
+                except subprocess.CalledProcessError as e:
+                    st.error(f"An error occurred: {e}")
+                except Exception as e:
+                    st.error(f"An unexpected error occurred: {e}")
+
+    if st.sidebar.button("Reset"):
+        uploaded_file = None
+        st.rerun()
+        
 # <Checkpoint>
