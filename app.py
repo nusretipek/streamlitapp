@@ -41,7 +41,7 @@ else:
 opt = st.sidebar.selectbox("Choose optimization level", [0, 1, 2],
                            index=0,
                            help="Select the appropriate optimization level (0, 1, or 2)")
-initial_k2 = st.sidebar.number_input(r"Initial $k_{c}$",
+initial_k2 = st.sidebar.number_input(r"Initial $k_{h}$",
                                      value=5.298317366548,
                                      min_value=0.00,
                                      max_value=10.00,
