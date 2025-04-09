@@ -19,8 +19,8 @@ def validate_csv(file):
 
 
 # Page config
-st.set_page_config(page_title="Dual-K Elo Rating", layout="wide")
-st.title("Dual-K Elo Rating")
+st.set_page_config(page_title="Dual Elo Rating", layout="wide")
+st.title("Dual Elo Rating")
 st.write("Adjust the parameters on the left and press 'Run' to execute the program.")
 
 # Sidebar
