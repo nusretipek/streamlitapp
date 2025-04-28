@@ -41,12 +41,12 @@ else:
 opt = st.sidebar.selectbox("Choose optimization level", [0, 1, 2],
                            index=0,
                            help="Select the appropriate optimization level (0, 1, or 2)")
-initial_k2 = st.sidebar.number_input(r"Initial $k_{h}$",
-                                     value=5.298317366548,
-                                     min_value=0.00,
-                                     max_value=10.00,
-                                     help=r"Set the initial $k_{c}$ parameter, in natural logarithm space.",
-                                     format="%.4f")
+#initial_k2 = st.sidebar.number_input(r"Initial $k_{h}$",
+#                                     value=5.298317366548,
+#                                     min_value=0.00,
+#                                     max_value=10.00,
+#                                     help=r"Set the initial $k_{c}$ parameter, in natural logarithm space.",
+#                                     format="%.4f")
 n_random = st.sidebar.number_input(r"Number of random permutations ($N_{p}$)",
                                    value=100,
                                    min_value=1,
@@ -91,7 +91,7 @@ with right_col:
             cmd = [executable_path,
                    "-f", file_path,
                    "--optimization-level", str(opt),
-                   "--initial-k2", str(initial_k2),
+                   "--initial-k2", str(5.298317366548),
                    "--n-random", str(n_random),
                    "--top-n", str(top_n),
                    "--verbose", str(verbose)]
