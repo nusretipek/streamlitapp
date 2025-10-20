@@ -91,7 +91,6 @@ with right_col:
             cmd = [executable_path,
                    "-f", file_path,
                    "--optimization-level", str(opt),
-                   "--initial-k2", str(5.298317366548),
                    "--n-random", str(n_random),
                    "--top-n", str(top_n),
                    "--verbose", str(verbose)]
